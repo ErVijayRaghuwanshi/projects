@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Single-file FastAPI app with:
  - Signup (form)
