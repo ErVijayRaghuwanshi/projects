@@ -1,20 +1,3 @@
-Nice — here's a single-file main.py FastAPI app that implements signup + login (HTML forms), stores users in sqlite3 with a per-user salt + PBKDF2-HMAC-SHA256 password hash, and issues JWT access tokens. No templates or external files required — everything is contained in the one file.
-
-Requirements
-
-Python 3.8+
-
-Install packages:
-
-
-pip install fastapi "uvicorn[standard]" PyJWT
-
-Save the code below as main.py and run with:
-
-uvicorn main:app --reload
-
-main.py
-
 #!/usr/bin/env python3
 """
 Single-file FastAPI app with:
@@ -321,38 +304,3 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
     if "text/html" in accept:
         return HTMLResponse(f"<h3>Error {exc.status_code}</h3><p>{exc.detail}</p><p><a href='/'>Home</a></p>", status_code=exc.status_code)
     return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
-
-Notes, security & next steps
-
-In production:
-
-Use a strong JWT_SECRET from environment (don't use the default).
-
-Set the cookie secure=True (HTTPS only) and proper samesite and domain.
-
-Consider rotating refresh tokens or using short lived access tokens + refresh tokens.
-
-Consider using a proper password hashing library like argon2-cffi or passlib with bcrypt/argon2 instead of manual PBKDF2; PBKDF2 is OK as long as iterations are high and parameters chosen properly.
-
-Add rate limiting and account lockout rules to prevent brute force.
-
-Use TLS (HTTPS).
-
-
-This example stores salt/hash as hex strings in SQLite. That's easy to inspect and portable.
-
-API endpoints included:
-
-POST /login/json returns token for non-browser clients
-
-POST /users/create programmatic user creation
-
-
-
-If you want, I can:
-
-Replace PBKDF2 with passlib/argon2 implementation.
-
-Add refresh tokens and token rotation.
-
-Add an API-only version (no HTML), or a tiny JS frontend that stores token in localStorage and sets Authorization header. Which of those would you like next?
